@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 export let name
 const serverUrl = 'http://localhost:8085'
 export let movies = []
@@ -9,7 +9,8 @@ $: isCastListVisible = cast.length > 0
 export async function handleSubmit(e) {
   e.preventDefault()
 	cast = []
-  const title = document.getElementById('search-input').value
+	const input = <HTMLInputElement>document.getElementById('search-input')
+  const title = input.value
   const response = await fetch(`${serverUrl}/who-died?q=${title}`)
 	const jsonData = await response.json()
 	movies = jsonData.results
