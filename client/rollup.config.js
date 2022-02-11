@@ -1,5 +1,4 @@
 import svelte from 'rollup-plugin-svelte';
-import commonjs from '@rollup/plugin-commonjs';
 import resolve from '@rollup/plugin-node-resolve';
 import livereload from 'rollup-plugin-livereload';
 import { terser } from 'rollup-plugin-terser';
@@ -34,17 +33,17 @@ function serve() {
 export default {
 	input: 'src/main.ts',
 	output: {
-		sourcemap: true,
+		sourcemap: false,
 		format: 'iife',
 		name: 'app',
 		file: 'public/build/bundle.js'
 	},
 	plugins: [
 		svelte({
-			preprocess: sveltePreprocess({ sourceMap: !production }),
+			preprocess: sveltePreprocess({ sourceMap: false }),
 			compilerOptions: {
 				// enable run-time checks when not in production
-				dev: !production
+				dev: !production,
 			}
 		}),
 		// we'll extract any component CSS out into
@@ -60,13 +59,10 @@ export default {
 			browser: true,
 			dedupe: ['svelte']
 		}),
-		commonjs(),
-		typescript({
-			sourceMap: !production,
-			inlineSources: !production
-		}),
+		typescript(),
 		prettier({
-      tabWidth: 2,
+			parser: 'babel',
+			filepath: './prettierrc'
     }),
 		// In dev mode, call `npm run start` once
 		// the bundle has been generated
