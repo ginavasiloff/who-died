@@ -4,15 +4,16 @@ import fetch from 'node-fetch'
 import dotenv from 'dotenv'
 
 dotenv.config()
-const app = express();
+const app = express()
 const key = process.env.MOVIE_DB_API_KEY
-const movieDbUrl = process.env.MOVIE_DB_API_URL
+
+const movieDbApiUrl = process.env.MOVIE_DB_API_URL
+const movieDbApiUrlCast = process.env.MOVIE_DB_API_URL_CAST
 app.use(express.json())
 app.use(cors())
 
-
 app.get('/who-died', async (req, res) => {
-  const url = `${movieDbUrl}/search/movie/?api_key=${key}&query=${req.query?.q}`
+  const url = `${movieDbApiUrl}/search/movie/?api_key=${key}&query=${req.query?.q}`
   const data = await fetch(url)
   const result = await data.json()
   res.send(result)
@@ -20,7 +21,7 @@ app.get('/who-died', async (req, res) => {
 
 app.get('/who-died/:id', async (req, res) => {
   const movieId = req.params.id
-  const creditsUrl = `${movieDbUrl}/movie/${movieId}/credits?api_key=${key}`
+  const creditsUrl = `${movieDbApiUrl}/movie/${movieId}/credits?api_key=${key}`
   const response = await fetch(creditsUrl)
   const data = await response.json()
   const final = data.cast.reduce( (all, current) => {
@@ -32,7 +33,7 @@ app.get('/who-died/:id', async (req, res) => {
 
 async function getIndividualDetails(people) {
   return await Promise.all(people.map(async p => {
-    const memberUrl = `${movieDbUrl}/person/${p.id}?api_key=${key}`
+    const memberUrl = `${movieDbApiUrlCast}/person/${p.cast_id}?api_key=${key}`
     const memberResponse = await fetch(memberUrl)
     return await memberResponse.json()
   }))

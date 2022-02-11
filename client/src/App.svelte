@@ -33,14 +33,22 @@ export async function getMovieDetails(id) {
 		</form>{#if isResultsListVisible}
 			<ul>
 			{#each movies as movie}
-			<li><button id={movie.id} on:click|once={() => getMovieDetails(movie.id)}>{movie.title}</button></li>
+			<li id={movie.id} on:click|once={() => getMovieDetails(movie.id)}>
+				<img src={`https://image.tmdb.org/t/p/w92/${movie.poster_path}`} alt="" />
+				<div class="details">
+					<span class="title">{movie.title}</span>
+					<span class="year">{movie.release_date}</span>
+				</div>
+			</li>
 			{/each}</ul>
 		{/if}
 		{#if isCastListVisible}
 		<ul>
 			{#each cast as member}
-				<li class='{member.deathday ? "dead" : "alive"}'>{member.name} - {member.deathday}
-					<img src={`http://api.themoviedb.org/3${member.profile_path}`} alt="" />
+				<li class='{member.deathday ? "dead" : "alive"}'>
+					<img src={`https://image.tmdb.org/t/p/w92${member.profile_path}`} alt="" />
+						<div class="details"><span class="title">{member.name}</span>
+						<span class="year">{member.deathday}</span></div>
 				</li>
 			{/each}
 		</ul>
@@ -49,7 +57,11 @@ export async function getMovieDetails(id) {
 </main>
 
 <style>
+	:root {
+		background-color: #000000;
+	}
 	main {
+		color: #f3e9e7;
 		text-align: center;
 		padding: 1em;
 		max-width: 240px;
@@ -70,12 +82,36 @@ export async function getMovieDetails(id) {
 
 	li {
 		text-align: left;
+    border: 1px solid #f3e9e7;
+		display: flex;
+		align-items: center;
+		column-gap: 1rem;
 	}
 
-	.dead {
+ li img {
+		height: 4.5rem;
+	}
+
+	li .title {
+		align-self: middle;
+	}
+
+	.dead .year {
 		color: red;
 	}
 
+	li:hover {
+		cursor: pointer;
+	}
+
+	.details {
+		display: flex;
+		flex-direction: column;
+	}
+
+	.details .year {
+		font-size: 0.8rem;
+	}
 	@media (min-width: 640px) {
 		main {
 			max-width: none;
