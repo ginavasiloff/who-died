@@ -1,7 +1,7 @@
 {
   "main": "src",
   "devDependencies": {
-    "http-server": "^14.0.0",
+    "http-server": "^14.1.0",
     "nodemon": "^2.0.15",
     "rollup": "^2.63.0"
   },
