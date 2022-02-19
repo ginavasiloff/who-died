@@ -21,7 +21,9 @@ export async function getMovieDetails(id) {
 	const response = await fetch(`${serverUrl}/who-died/${id}`)
 	const jsonData = await response.json()
 	movies = []
-	cast = jsonData.cast
+	const dead = jsonData.cast.filter(member => member.deathday !== null)
+	const alive = jsonData.cast.filter(member => member.deathday === null)
+	cast = [...dead, ...alive]
 }
 </script>
 
@@ -33,22 +35,26 @@ export async function getMovieDetails(id) {
 		</form>{#if isResultsListVisible}
 			<ul>
 			{#each movies as movie}
-			<li id={movie.id} on:click|once={() => getMovieDetails(movie.id)}>
+			<li aria-roledescription="link" id={movie.id} on:click|once={() => getMovieDetails(movie.id)} role="link" title={`See the cast of ${movie.title}`}>
 				<img src={`https://image.tmdb.org/t/p/w92/${movie.poster_path}`} alt="" />
 				<div class="details">
 					<span class="title">{movie.title}</span>
 					<span class="year">{movie.release_date}</span>
 				</div>
 			</li>
-			{/each}</ul>
+			{/each}
+		</ul>
 		{/if}
 		{#if isCastListVisible}
 		<ul>
 			{#each cast as member}
 				<li class='{member.deathday ? "dead" : "alive"}'>
-					<img src={`https://image.tmdb.org/t/p/w92${member.profile_path}`} alt="" />
+					<figure><img src={`https://image.tmdb.org/t/p/w92${member.profile_path}`} alt="" /></figure>
 						<div class="details"><span class="title">{member.name}</span>
-						<span class="year">{member.deathday}</span></div>
+							{#if member.deathday}
+								<span class="year">{member.deathday.toLocaleDateString()}</span>
+							{/if}
+						</div>
 				</li>
 			{/each}
 		</ul>
@@ -61,9 +67,9 @@ export async function getMovieDetails(id) {
 		background-color: #000000;
 	}
 	main {
-		color: #f3e9e7;
+		color: #cccbcb;
 		text-align: center;
-		padding: 1em;
+		padding: .75em;
 		max-width: 240px;
 		margin: auto;
 		display: flex;
@@ -82,13 +88,19 @@ export async function getMovieDetails(id) {
 
 	li {
 		text-align: left;
-    border: 1px solid #f3e9e7;
+    border: 1px solid #494949;
 		display: flex;
 		align-items: center;
 		column-gap: 1rem;
 	}
 
  li img {
+		height: 4.5rem;
+	}
+
+	li figure {
+		width: 3rem;
+		margin: 0;
 		height: 4.5rem;
 	}
 

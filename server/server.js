@@ -28,7 +28,7 @@ app.get('/who-died/:id', async (req, res) => {
    return [...all, current]
   },[])
   const test = await getIndividualDetails(final)
-  res.send({ cast: test})
+  res.send({ cast: test.filter(member => !member.status_code) })
 })
 
 async function getIndividualDetails(people) {
